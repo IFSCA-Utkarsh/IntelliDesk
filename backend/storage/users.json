@@ -1,0 +1,50 @@
+[
+  {
+    "id": "u1",
+    "username": "Narendra_Kumar_Meena",
+    "email": "narendra_kumar_meena@example.com",
+    "password": "9879",
+    "role": "superuser",
+    "active": true
+  },
+  {
+    "id": "a1",
+    "username": "Jay_Parmar",
+    "email": "jay_parmar@example.com",
+    "password": "4509",
+    "role": "admin",
+    "active": true
+  },
+  {
+    "id": "a2",
+    "username": "Dinesh_Choudhary",
+    "email": "dinesh_choudhary@example.com",
+    "password": "9614",
+    "role": "admin",
+    "active": true
+  },
+  {
+    "id": "u2",
+    "username": "Joseph_Joshy",
+    "email": "joseph_joshy@example.com",
+    "password": "9858",
+    "role": "user",
+    "active": true
+  },
+  {
+    "id": "u3",
+    "username": "Abhishek_Faujdar",
+    "email": "abhishek_faujdar@example.com",
+    "password": "9847",
+    "role": "user",
+    "active": true
+  },
+  {
+    "id": "u4",
+    "username": "Chirag_Ravat",
+    "email": "chirag_ravat@example.com",
+    "password": "9915",
+    "role": "user",
+    "active": true
+  }
+]
