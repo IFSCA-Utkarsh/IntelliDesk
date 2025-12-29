@@ -1,0 +1,33 @@
+src/
+├── app/
+│   ├── App.jsx
+│   ├── router.jsx
+│   └── ProtectedRoute.jsx
+│
+├── layout/
+│   ├── MainLayout.jsx
+│   └── Sidebar.jsx
+│
+├── pages/
+│   ├── Chatbot.jsx
+│   ├── Meetings.jsx
+│   ├── Equipment.jsx
+│   ├── Tickets.jsx
+│   └── Login.jsx
+│
+├── components/
+│   ├── LogoBlock.jsx
+│   ├── Spinner.jsx
+│   ├── ErrorBanner.jsx
+│   ├── EmptyState.jsx
+│   └── RoleBadge.jsx
+│
+├── services/
+│   ├── api.js
+│   ├── auth.service.js
+│   └── meetings.service.js
+│
+├── styles/
+│   └── theme.css
+│
+└── main.jsx
