@@ -1,19 +1,23 @@
-import { useState } from "react";
-import Spinner from "../../components/Spinner";
+import { useEffect, useRef, useState } from "react";
+import Message from "../../components/Message";
+import TypingIndicator from "../../components/TypingIndicator";
 import ErrorBanner from "../../components/ErrorBanner";
 
 export default function Chatbot() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const role = user?.role;
-
-  const [message, setMessage] = useState("");
-  const [responses, setResponses] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  async function sendMessage(customMessage) {
-    const finalMessage = customMessage ?? message;
-    if (!finalMessage.trim()) return;
+  const bottomRef = useRef(null);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  async function sendMessage(text) {
+    if (!text || !text.trim()) return;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -21,127 +25,95 @@ export default function Chatbot() {
       return;
     }
 
+    // Add user message immediately
+    setMessages((prev) => [...prev, { role: "user", text }]);
+    setInput("");
     setLoading(true);
     setError(null);
 
     try {
-      const res = await fetch("/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          message: finalMessage,
-          role // optional, backend may ignore safely
-        })
+        body: JSON.stringify({ message: text }),
       });
 
-      if (!res.ok) {
-        throw new Error("Chat service unavailable");
+      if (!response.ok) {
+        throw new Error("Failed to reach IntelliDesk service");
       }
 
-      const data = await res.json();
+      const data = await response.json();
 
-      setResponses(prev => [
+      setMessages((prev) => [
         ...prev,
-        { role: "user", text: finalMessage },
-        { role: "bot", data }
+        {
+          role: "assistant",
+          text:
+            typeof data.response === "string"
+              ? data.response
+              : "Sorry, I couldn't understand that.",
+        },
       ]);
-
-      setMessage("");
     } catch (err) {
-      setError(err.message || "Failed to send message");
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   }
 
-  function renderBotResponse(data) {
-    if (!data) return null;
-
-    switch (data.route) {
-      case "reply":
-        return <p>{data.response}</p>;
-
-      case "meeting":
-        return (
-          <div className="bot-card">
-            <strong>Meeting Request Detected</strong>
-            <pre>{JSON.stringify(data.extracted_details, null, 2)}</pre>
-          </div>
-        );
-
-      case "ticket":
-        return (
-          <div className="bot-card">
-            <strong>Suggested IT Ticket</strong>
-            <p>{data.suggested_issue}</p>
-          </div>
-        );
-
-      default:
-        return <pre>{JSON.stringify(data, null, 2)}</pre>;
-    }
-  }
-
   return (
     <section className="chatbot-page">
-      <h1>Chatbot</h1>
+      <h1>🤖 IntelliDesk Assistant</h1>
 
-      {/* 🔹 QUICK ACTIONS */}
+      {/* Quick Actions */}
       <div className="quick-actions">
-        <button onClick={() => sendMessage("I want to book a meeting")}>
-          Book Meeting
+        <button onClick={() => sendMessage("Book a meeting")}>
+          📅 Book Meeting
         </button>
-
-        <button onClick={() => sendMessage("I have an IT issue")}>
-          Raise IT Ticket
+        <button onClick={() => sendMessage("I need a laptop")}>
+          💻 Request Equipment
         </button>
-
-        {role !== "user" && (
-          <button onClick={() => sendMessage("Show all system issues")}>
-            View System Issues
-          </button>
-        )}
+        <button onClick={() => sendMessage("My system is slow")}>
+          🎫 IT Issue
+        </button>
       </div>
 
+      {/* Chat Window */}
       <div className="chat-window">
-        {responses.length === 0 && (
+        {messages.length === 0 && (
           <p className="muted">
-            Ask something like “Schedule a meeting tomorrow”
+            Try: <em>“Book a meeting tomorrow at 11”</em>
           </p>
         )}
 
-        {responses.map((item, index) => (
-          <div
-            key={index}
-            className={`chat-message ${item.role} fade-in`}
-          >
-            {item.role === "user" ? (
-              <div className="user-msg">{item.text}</div>
-            ) : (
-              <div className="bot-msg">
-                {renderBotResponse(item.data)}
-              </div>
-            )}
-          </div>
+        {messages.map((msg, index) => (
+          <Message key={index} role={msg.role} text={msg.text} />
         ))}
 
-        {loading && <Spinner />}
+        {loading && <TypingIndicator />}
+        <div ref={bottomRef} />
       </div>
 
       {error && <ErrorBanner message={error} />}
 
+      {/* Input Bar */}
       <div className="chat-input">
         <input
+          type="text"
           placeholder="Type your message…"
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && sendMessage()}
+          value={input}
           disabled={loading}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendMessage(input);
+            }
+          }}
         />
-        <button onClick={() => sendMessage()} disabled={loading}>
+        <button onClick={() => sendMessage(input)} disabled={loading}>
           Send
         </button>
       </div>

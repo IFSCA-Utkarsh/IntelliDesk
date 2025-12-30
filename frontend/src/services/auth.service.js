@@ -1,11 +1,19 @@
-export function login(token, user) {
-  localStorage.setItem("token", token);
-  localStorage.setItem("user", JSON.stringify(user));
+import api from "./api";
+
+export async function login(username, password) {
+  const res = await api.post("/auth/login", {
+    username,
+    password,
+  });
+
+  localStorage.setItem("token", res.data.access_token);
+  localStorage.setItem("user", JSON.stringify(res.data.user));
+
+  return res.data.user;
 }
 
 export function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  localStorage.clear();
   window.location.href = "/login";
 }
 

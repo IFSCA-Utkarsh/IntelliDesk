@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -16,14 +16,24 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
       localStorage.clear();
       window.location.href = "/login";
     }
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
+
+/* ✅ REQUIRED BY MULTIPLE SERVICES */
+export async function apiFetch(url, options = {}) {
+  const response = await api({
+    url,
+    method: options.method || "GET",
+    data: options.body ? JSON.parse(options.body) : undefined,
+  });
+  return response.data;
+}
 
 export default api;

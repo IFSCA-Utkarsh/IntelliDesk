@@ -7,10 +7,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
-    if (token && storedUser) {
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
     }
 
@@ -25,6 +25,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.clear();
+    setUser(null);
     window.location.href = "/login";
   };
 
@@ -32,7 +33,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
-        role: user?.role ?? null,
+        role: user?.role,
         loading,
         login,
         logout,

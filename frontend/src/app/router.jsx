@@ -1,8 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
+import MainLayout from "../layout/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import RequireRole from "../components/RequireRole";
-import MainLayout from "../layout/MainLayout";
-import { ROLES } from "../constants/roles";
 
 import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
@@ -19,7 +18,9 @@ import AuditLogs from "../pages/superuser/AuditLogs";
 import UserManagement from "../pages/superuser/UserManagement";
 import AllSystemData from "../pages/superuser/AllSystemData";
 
-export default createBrowserRouter([
+import { ROLES } from "../constants/roles";
+
+const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
 
   {
@@ -44,7 +45,7 @@ export default createBrowserRouter([
         ),
       },
       {
-        path: "admin/equipment",
+        path: "admin/equipment-approval",
         element: (
           <RequireRole allowed={[ROLES.ADMIN, ROLES.SUPERUSER]}>
             <EquipmentApproval />
@@ -81,3 +82,5 @@ export default createBrowserRouter([
     ],
   },
 ]);
+
+export default router;

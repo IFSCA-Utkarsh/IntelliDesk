@@ -1,0 +1,11 @@
+[
+  {
+    "equipment_id": "LAP-001",
+    "name": "Laptop",
+    "status": "available",
+    "requested_by": null,
+    "secret_code": null,
+    "secret_expires_at": "2025-12-29T09:22:23.615610",
+    "requested_at": null
+  }
+]

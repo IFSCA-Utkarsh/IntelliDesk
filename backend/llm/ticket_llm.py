@@ -18,10 +18,28 @@ TICKET_SCHEMA = {
     }
 }
 
+
 def troubleshoot(issue: str) -> dict:
+    prompt = f"""
+You are an IT support assistant.
+
+Your task:
+- Provide step-by-step troubleshooting advice
+- Mark resolved = true ONLY if the issue is fully solved
+
+Return ONLY valid JSON.
+No text. No explanation. No markdown.
+
+JSON schema:
+{json.dumps(TICKET_SCHEMA, indent=2)}
+
+User issue:
+{issue}
+"""
+
     raw = ollama_generate(
         model=TICKET_MODEL,
-        prompt=issue
+        prompt=prompt
     )
 
     try:
