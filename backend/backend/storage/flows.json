@@ -1,0 +1,25 @@
+[
+  {
+    "flow_id": "flow-97f17e",
+    "user_id": "u2",
+    "type": "meeting",
+    "data": {},
+    "history": [
+      {
+        "role": "user",
+        "content": "Book a meeting"
+      },
+      {
+        "role": "user",
+        "content": "My Ram is Slow"
+      },
+      {
+        "role": "user",
+        "content": "Hello"
+      }
+    ],
+    "step": "collect",
+    "created_at": "2025-12-31T04:32:07.436741",
+    "expires_at": "2025-12-31T04:42:07.436747"
+  }
+]

@@ -1,1 +1,27 @@
-{}
+{
+  "u1": {
+    "data": {
+      "type": "meeting",
+      "meeting_state": {},
+      "history": [
+        {
+          "role": "user",
+          "content": "Book meeting"
+        },
+        {
+          "role": "assistant",
+          "content": "What is the title of the meeting?"
+        },
+        {
+          "role": "user",
+          "content": "IntelliDesk"
+        },
+        {
+          "role": "assistant",
+          "content": "What is the title of the meeting?"
+        }
+      ]
+    },
+    "ts": "2025-12-30T08:56:04.624708"
+  }
+}

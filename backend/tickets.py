@@ -128,3 +128,16 @@ def close_ticket(ticket_id: str, user=Depends(get_current_user)):
     log_event(user["id"], "TICKET_CLOSED_AND_USER_SUSPENDED", ticket_id)
 
     return {"status": "closed", "user_suspended": True}
+
+def run_ticket_llm(flow: dict) -> dict:
+    """
+    Temporary stub for ticket LLM.
+    Will be replaced with full troubleshooting logic.
+    """
+
+    return {
+        "steps": [
+            "Please restart your system and try again."
+        ],
+        "resolved": False
+    }

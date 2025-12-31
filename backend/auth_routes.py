@@ -7,7 +7,7 @@ from config import settings
 
 JWT_SECRET = settings.JWT_SECRET
 JWT_ALGO = settings.JWT_ALGO
-JWT_EXP_MINUTES = 60
+JWT_EXP_MINUTES = 720
 
 router = APIRouter(prefix="/auth")
 

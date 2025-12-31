@@ -1,32 +1,38 @@
+# backend/app.py
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer
-from chat import router as chat_router
-from auth_routes import router as auth_router
-from meetings import router as meetings_router
-from equipment import router as equipment_router
-from tickets import router as tickets_router
-from admin_superuser import router as admin_router
-from config import settings 
+from fastapi.openapi.utils import get_openapi
 
-app = FastAPI(title="Agentic IT Management Portal")
+from auth.routes import router as auth_router
+from chat.routes import router as chat_router
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth_router, prefix="/api")
-app.include_router(chat_router, prefix="/api")
-app.include_router(meetings_router, prefix="/api")
-app.include_router(equipment_router, prefix="/api")
-app.include_router(tickets_router, prefix="/api")
-app.include_router(admin_router, prefix="/api")
+app = FastAPI(title="IntelliDesk API")
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
+app.include_router(auth_router, prefix="/api", tags=["Auth"])
+app.include_router(chat_router, prefix="/api", tags=["Chat"])
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    schema = get_openapi(
+        title="IntelliDesk API",
+        version="1.0.0",
+        routes=app.routes,
+    )
+
+    schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+    schema["security"] = [{"BearerAuth": []}]
+    app.openapi_schema = schema
+    return schema
+
+app.openapi = custom_openapi
